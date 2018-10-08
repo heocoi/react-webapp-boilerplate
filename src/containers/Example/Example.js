@@ -6,8 +6,17 @@ import {
   TextField,
   Button,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  RadioGroup,
+  Radio,
+  Typography
 } from "@material-ui/core";
+import {
+  getTranslate,
+  getActiveLanguage,
+  getLanguages,
+  withLocalize
+} from "react-localize-redux";
 
 class Example extends Component {
   state = {
@@ -26,7 +35,13 @@ class Example extends Component {
   };
 
   render() {
-    const { todos } = this.props;
+    const {
+      languages,
+      currentLanguage,
+      setActiveLanguage,
+      translate,
+      todos
+    } = this.props;
     const { todo } = this.state;
 
     return (
@@ -62,12 +77,38 @@ class Example extends Component {
         {todos.map((t, idx) => (
           <FormControlLabel control={<Checkbox />} label={t} key={idx} />
         ))}
+
+        <hr />
+
+        <h3>Example: Localization (with react-localize-redux)</h3>
+        <RadioGroup
+          aria-label="locale"
+          name="locale"
+          style={{
+            flexDirection: "row"
+          }}
+          value={currentLanguage}
+          onChange={e => setActiveLanguage(e.target.value)}
+        >
+          {languages.map(language => (
+            <FormControlLabel
+              value={language.code}
+              control={<Radio color="primary" />}
+              label={language.name}
+            />
+          ))}
+        </RadioGroup>
+
+        <Typography>{translate("hello")}, Alice!</Typography>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
+  translate: getTranslate(state.localize),
+  currentLanguage: getActiveLanguage(state.localize).code,
+  languages: getLanguages(state.localize),
   todos: state.todos
 });
 
@@ -78,4 +119,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Example);
+)(withLocalize(Example));
