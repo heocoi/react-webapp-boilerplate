@@ -17,6 +17,7 @@ import {
   getLanguages,
   withLocalize
 } from "react-localize-redux";
+import { camelCase } from "lodash-es";
 
 class Example extends Component {
   state = {
@@ -95,11 +96,18 @@ class Example extends Component {
               value={language.code}
               control={<Radio color="primary" />}
               label={language.name}
+              key={language.code}
             />
           ))}
         </RadioGroup>
 
         <Typography>{translate("hello")}, Alice!</Typography>
+
+        <hr />
+
+        <h3>Example: with lodash-es</h3>
+        <code>_.camelCase('--foo-bar--');</code>
+        <pre>// => {camelCase("--foo-bar--")}</pre>
       </div>
     );
   }
